@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Show Tracker Web App</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style type="text/css">
+    body {
+      font-family: "Meiryo";
+    }
+  </style>
+</head>
+<body>
+  <script type="text/x-handlebars">
+    <div class="navbar navbar-default">
+      <a class="navbar-brand" href="#">ShowTracker</a>
+      <ul class="nav navbar-nav">
+        <li>
+          {{#link-to 'shows'}}Shows{{/link-to}}
+        </li>
+        <li>
+          {{#link-to 'about'}}About{{/link-to}}
+        </li>
+      </ul>
+    </div>
+
+    <div class="container">
+      {{outlet}}
+    </div>
+  </script>
+
+  <script type="text/x-handlebars" id="index">
+    <h3>こっちへ紹介を書いてくれ！</h3>
+  </script>
+
+  <script type="text/x-handlebars" id="about">
+    <h3>こっちへ説明を書いてくれ！</h3>
+  </script>
+
+  <script type="text/x-handlebars" id="shows">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">今季節の番組</h4>
+      </div>
+      <table class="table">
+        <thead>
+          <th>ID</th>
+          <th colspan="2">名</th>
+          <th colspan="3">数</th>
+        </thead>
+        {{#each}}
+          <tr>
+            <td>{{id}}</td>
+            <td>{{title}}</td>
+            <td>
+              {{#link-to 'editshow' this
+                classNames="btn btn-default btn-sm" id=editbutton_id}}
+                <span class="glyphicon glyphicon-pencil"></span>変更
+              {{/link-to}}
+            </td> 
+            <td>{{episode}}</td>
+            <td>
+              <div class="btn-group">
+                <button class="btn btn-default btn-sm" {{action increment this}}>
+                  <span class="glyphicon glyphicon-plus"></span>
+                </button>
+                <button class="btn btn-default btn-sm" {{action decrement this}}>
+                  <span class="glyphicon glyphicon-minus"></span>
+                </button>
+              </div>
+            </td>
+            <td>
+              <button class="btn btn-danger btn-sm btn-block" {{action confirmDelete this}}>
+                <span class="glyphicon glyphicon-trash"></span>消す
+              </button>
+            </td>
+          </tr>
+        {{/each}}
+        <tr>
+          <td></td>
+          <td colspan="2">
+            {{input value=rowNewTitle action="createShow" placeholder="新しい行を入れる" classNames="form-control" id="rowTitleInput" type="text"}}
+          </td>
+          <td colspan="3">
+            {{input value=rowNewEpisode action="createShow" classNames="form-control" id="rowEpisodeInput" type="number"}}
+          </td>
+        </tr>
+      </table>
+      {{#if deleteConfirmation}}
+        {{partial 'shows/delete'}}
+      {{else}}
+        {{outlet}}
+      {{/if}}
+    </div>
+  </script>
+
+  <script type="text/x-handlebars" id="shows/delete">
+    <div class="row">
+      <div class="col-sm-offset-3 col-sm-6">
+        <div class="panel panel-danger">
+          <div class="panel-heading">
+            <h3 class="panel-title">"#{{deleteId}}: {{deleteTitle}}" を消してもいいの？</h3>
+          </div>
+          <div class="panel-body">
+            マジでこれで最後だよ！
+            <div class="text-right">
+              <button {{action delete}} class="btn btn-default">イェス</button>
+              <button {{action cancelDelete}} class="btn btn-default">戻る</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>  
+
+  <script type="text/x-handlebars" id="editshow">
+    <div class="row">
+      <div class="col-sm-offset-3 col-sm-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">Edit Show #{{id}}</h4>
+          </div>
+          <div class="panel-body">
+            {{partial 'editshow/form'}}
+            <div class="text-right">
+              <button {{action "doneEditing" this}} class="btn btn-default">セーブ</button>
+              <a href="#/shows" class="btn btn-default">戻る</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/x-handlebars" id="editshow/form">
+    <form role="form">
+      <div class="form-group">
+        <label for="titleInput">Title</label>
+        {{input value=newTitle placeholder=title classNames="form-control" id="titleInput" type="text"}}
+      </div>
+      <div class="form-group">
+        <label for="episodeInput">Episode</label>
+        {{input value=newEpisode placeholder=episode classNames="form-control" id="episodeInput" type="number"}}
+      </div>
+    </form>
+  </script>
+
+  <script src="js/libs/jquery-1.10.2.js"></script>
+  <script src="js/libs/handlebars-1.1.2.js"></script>
+  <script src="js/libs/ember-1.3.1.js"></script>
+  <script src="js/libs/ember-data.js"></script>
+  <script src="js/libs/bootstrap.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/models.js"></script>
+  <!-- to activate the test runner, add the "?test" query string parameter -->
+  <script src="tests/runner.js"></script>
+</body>
+</html>
