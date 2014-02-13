@@ -1,25 +1,35 @@
 (ns showtrackerclj.handler
   (:use [compojure.core]
+        [cheshire.core]
         [showtrackerclj.model])
   (:require [compojure.handler :as handler]
             [compojure.route :as route]
             [ring.util.response :as resp]           
             [ring.middleware.json :as json]))
 
+(defn respond-json [body & [status]]
+  { :status (or status 200) 
+    :headers { "Content-Type" "application/json" }
+    :body (generate-string body) })
+
+(defn extract-json [params]
+  (parse-string (slurp (:body params)) true))
+
 (defroutes app-routes
   (GET "/" []
     (resp/redirect "/index.html"))
-  (GET "/shows" []
-    {:body @data-store})
-  (GET "/shows/:id" [id]
-    {:body {:show (find-by-id @data-store id)}})
-  (PUT "/shows/:id" {id :id body :body}
-    (println id body))
+  (context "/shows" [] (defroutes shows-routes 
+    (GET "/" []
+      (respond-json @data-store))
+    (context "/:id" [id] (defroutes ids-routes
+      (GET "/" []
+        (respond-json {:show (find-by-id @data-store id)}))
+      (PUT "/" params
+        (let [show (:show (extract-json params))]
+          (println id (:title show) (:episode show))))))))
   (route/resources "/")
   (route/not-found "Not Found"))
 
+
 (def app
-  (-> (handler/site app-routes)
-      (json/wrap-json-body)
-      (json/wrap-json-params)
-      (json/wrap-json-response)))
+  (handler/site app-routes))
