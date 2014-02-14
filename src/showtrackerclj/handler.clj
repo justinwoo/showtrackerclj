@@ -21,9 +21,14 @@
   (context "/shows" [] (defroutes shows-routes 
     (GET "/" []
       (respond-json @data-store))
+    (POST "/" params
+        (let [show (:show (extract-json params))]
+          (println show)))
     (context "/:id" [id] (defroutes ids-routes
       (GET "/" []
         (respond-json {:show (find-by-id @data-store id)}))
+      (DELETE "/" params
+        (println id))
       (PUT "/" params
         (let [show (:show (extract-json params))]
           (println id (:title show) (:episode show))))))))
