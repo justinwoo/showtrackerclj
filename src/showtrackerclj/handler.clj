@@ -20,13 +20,16 @@
     (resp/redirect "/index.html"))
   (context "/shows" [] (defroutes shows-routes 
     (GET "/" []
-      (respond-json @data-store))
+      (respond-json { :shows @data-store }))
     (POST "/" params
         (let [show (:show (extract-json params))]
           (println show)))
     (context "/:id" [id] (defroutes ids-routes
       (GET "/" []
-        (respond-json {:show (find-by-id @data-store id)}))
+        (let [show (find-by-id @data-store id)]
+          (if show 
+            (respond-json { :show show })
+            (respond-json { :show {} }))))
       (DELETE "/" params
         (println id))
       (PUT "/" params
