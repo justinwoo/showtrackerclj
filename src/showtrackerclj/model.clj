@@ -25,3 +25,7 @@
         new-show (merge show { :id id })
         updated-shows (conj old-shows new-show)]
     (reset! data-store updated-shows)))
+
+(defn delete-show [id]
+  (let [filtered-shows (exclude-by-id id)]
+    (reset! data-store filtered-shows)))

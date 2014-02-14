@@ -36,7 +36,9 @@
             (respond-json { :show show })
             (respond-json { :show {} }))))
       (DELETE "/" params
-        (println id))
+        (let [int-id (Integer/parseInt id)
+              shows (delete-show int-id)]
+          (respond-json { :shows shows })))
       (PUT "/" params
         (let [int-id (Integer/parseInt id)
               show (:show (extract-json params))
