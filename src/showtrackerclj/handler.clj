@@ -22,19 +22,27 @@
     (GET "/" []
       (respond-json { :shows @data-store }))
     (POST "/" params
-        (let [show (:show (extract-json params))]
-          (println show)))
+        (let [show (:show (extract-json params))
+              id @counter
+              nextid (swap! counter inc)
+              persist (persist-show id show)
+              new-show (find-by-id id)]
+            (respond-json { :show new-show })))
     (context "/:id" [id] (defroutes ids-routes
       (GET "/" []
-        (let [show (find-by-id @data-store id)]
+        (let [int-id (Integer/parseInt id)
+              show (find-by-id int-id)]
           (if show 
             (respond-json { :show show })
             (respond-json { :show {} }))))
       (DELETE "/" params
         (println id))
       (PUT "/" params
-        (let [show (:show (extract-json params))]
-          (println id (:title show) (:episode show))))))))
+        (let [int-id (Integer/parseInt id)
+              show (:show (extract-json params))
+              update (update-show int-id show)
+              updated-show (find-by-id int-id)]
+          (respond-json { :show updated-show })))))))
   (route/resources "/")
   (route/not-found "Not Found"))
 
