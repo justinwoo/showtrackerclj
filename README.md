@@ -1,6 +1,6 @@
 # showtrackerclj
 
-FIXME
+The Show Tracker Web App in Clojure form! Uses sqlkorma with pgsql. UI is in Ember.js.
 
 ## Prerequisites
 

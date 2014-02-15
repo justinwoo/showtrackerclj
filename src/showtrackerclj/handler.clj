@@ -20,17 +20,11 @@
     (resp/redirect "/index.html"))
   (context "/shows" [] (defroutes shows-routes 
     (GET "/" []
-      (let [shows (find-all)
-            response-obj { :shows shows }
-            json-str (generate-string response-obj)
-            spit2 (spit "myshows.json" json-str)]
+      (let [shows (find-all)]
         (respond-json { :shows shows })))
     (POST "/" params
         (let [show (:show (extract-json params))
-              id @counter
-              nextid (swap! counter inc)
-              persist (persist-show id show)
-              new-show (find-by-id id)]
+              new-show (persist-show show)]
             (respond-json { :show new-show })))
     (context "/:id" [id] (defroutes ids-routes
       (GET "/" []
@@ -41,8 +35,8 @@
             (respond-json { :show {} }))))
       (DELETE "/" params
         (let [int-id (Integer/parseInt id)
-              shows (delete-show int-id)]
-          (respond-json { :shows shows })))
+              result (delete-show int-id)]
+          (respond-json { :message "show deleted" })))
       (PUT "/" params
         (let [int-id (Integer/parseInt id)
               show (:show (extract-json params))
@@ -52,6 +46,15 @@
   (route/resources "/")
   (route/not-found "Not Found"))
 
+(defn catch-errors [handler]
+  (fn [request]
+    (try
+      (handler request)
+      (catch Exception e
+        (respond-json 
+          { :body (str "error: " e) }
+          400)))))
 
 (def app
-  (handler/site app-routes))
+  (catch-errors 
+    (handler/site app-routes)))

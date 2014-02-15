@@ -4,7 +4,7 @@
         cheshire.core))
 
 (deftest crappy-test
-  (let [shows (get-all)]
-    (println shows)
-    (println (class shows))
-    (println (generate-string shows))))
+  (let [cleanup (delete-by-id 63)  
+        result (insert-show { :title "test" :episode 1})]
+    (println result)
+    (println (class result))))

@@ -15,6 +15,23 @@
   (database db-store)
   (entity-fields :title :episode))
 
-(defn get-all []
+(defn select-all []
   (select shows))
 
+(defn select-by-id [id]
+  (first 
+    (select shows
+      (where { :id id }))))
+
+(defn insert-show [show]
+  (insert shows
+    (values show)))
+
+(defn delete-by-id [id]
+  (delete shows
+    (where { :id id })))
+
+(defn update-show [id show]
+  (update shows
+    (set-fields show)
+    (where { :id id })))
