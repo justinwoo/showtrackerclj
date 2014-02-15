@@ -9,8 +9,7 @@
 
 (defn respond-json [body & [status]]
   { :status (or status 200) 
-    :headers { "Content-Type" "application/json" }
-    :charset "UTF-8"
+    :headers { "Content-Type" "application/json;charset=UTF-8" }
     :body (generate-string body) })
 
 (defn extract-json [params]
