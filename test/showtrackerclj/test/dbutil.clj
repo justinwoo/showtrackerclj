@@ -1,6 +1,10 @@
 (ns showtrackerclj.test.dbutil
   (:use showtrackerclj.dbutil
-        clojure.test))
+        clojure.test
+        cheshire.core))
 
 (deftest crappy-test
-  (println (get-all)))
+  (let [shows (get-all)]
+    (println shows)
+    (println (class shows))
+    (println (generate-string shows))))

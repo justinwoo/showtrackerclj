@@ -1,8 +1,12 @@
-(ns showtrackerclj.model)
+(ns showtrackerclj.model
+  (:use showtrackerclj.dbutil))
 
 (def counter (atom 1))
 
 (def data-store (atom []))
+
+(defn find-all []
+  (get-all))
 
 (defn find-by-id [id]
   (first (filter (fn [show] (= (:id show) id))

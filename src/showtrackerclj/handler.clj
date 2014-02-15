@@ -10,6 +10,7 @@
 (defn respond-json [body & [status]]
   { :status (or status 200) 
     :headers { "Content-Type" "application/json" }
+    :charset "UTF-8"
     :body (generate-string body) })
 
 (defn extract-json [params]
@@ -20,7 +21,11 @@
     (resp/redirect "/index.html"))
   (context "/shows" [] (defroutes shows-routes 
     (GET "/" []
-      (respond-json { :shows @data-store }))
+      (let [shows (find-all)
+            response-obj { :shows shows }
+            json-str (generate-string response-obj)
+            spit2 (spit "myshows.json" json-str)]
+        (respond-json { :shows shows })))
     (POST "/" params
         (let [show (:show (extract-json params))
               id @counter
