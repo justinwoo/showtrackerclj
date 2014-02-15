@@ -20,10 +20,6 @@
     (is result)
     (is (= 2 (:id result)))))
 
-(deftest test-query []
-  (let [shows (get-all)]
-    (println shows)))
-
 (defn setup-model []
       (swap! data-store 
         conj { :id 1 :title "sometitle" :episode 1 }))

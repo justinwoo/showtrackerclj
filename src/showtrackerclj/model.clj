@@ -1,20 +1,4 @@
-(ns showtrackerclj.model
-  (:use korma.db
-        korma.core))
-
-(defdb db-store (postgres { :user "pg-user"
-                            :password "mycrappypassword" 
-                            :host "localhost"
-                            :port "5432" }))
-
-(defentity shows
-  (pk :id)
-  (table :shows)
-  (database db-store)
-  (entity-fields :title :episode))
-
-(defn get-all [] 
-  (select shows))
+(ns showtrackerclj.model)
 
 (def counter (atom 1))
 
