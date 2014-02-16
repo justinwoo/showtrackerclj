@@ -1,13 +1,10 @@
 (ns showtrackerclj.dbutil
   (:use korma.db
-        korma.core))
+        korma.core)
+  (:require [showtrackerclj.config :as config]))
 
 (defdb db-store
-  (postgres { :db "showtrackerdb"
-              :user "pg-user"
-              :password "mycrappypassword"
-              :host "localhost"
-              :port "5432" }))
+  (postgres config/dbconfig))
 
 (defentity shows
   (pk :id)
@@ -19,7 +16,7 @@
   (select shows))
 
 (defn select-by-id [id]
-  (first 
+  (first
     (select shows
       (where { :id id }))))
 
